@@ -58,12 +58,19 @@ void setup(void)
 
 void loop()
 {
+
+  if (WiFi.RSSI() == 0) // Checks if Wifi signal lost.
+  {
+    // reset arduino by caling reset function at address 0x00
+    asm volatile("jmp 0x00"); // reset
+  }
+
   WiFiClient client = server.available(); // listen for incoming clients
 
   if (client)
-  {                               // if you get a client,
+  { // if you get a client,
     // Serial.println("new client"); // print a message out the serial port
-    String currentLine = "";      // make a String to hold incoming data from the client
+    String currentLine = ""; // make a String to hold incoming data from the client
     while (client.connected())
     { // loop while the client's connected
       if (client.available())
@@ -108,5 +115,10 @@ void loop()
     client.stop();
     // Serial.println("client disconnected");
     digitalWrite(LED, LOW);
+  }
+  else
+  {
+    // sleep one second
+    delay(1000);
   }
 }
